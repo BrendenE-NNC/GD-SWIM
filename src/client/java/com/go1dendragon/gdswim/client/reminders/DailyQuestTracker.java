@@ -33,7 +33,6 @@ public class DailyQuestTracker {
                     }
                 }
             }
-            IO.println("Matriarch Available:" + matriarchAvailable);
         }
     }
 }

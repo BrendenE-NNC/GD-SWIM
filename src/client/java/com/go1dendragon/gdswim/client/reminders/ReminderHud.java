@@ -1,13 +1,19 @@
 package com.go1dendragon.gdswim.client.reminders;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-public class ReminderHud {
 
+public class ReminderHud {
+    private final DailyQuestTracker tracker;
+
+    public ReminderHud(DailyQuestTracker tracker) {
+        this.tracker = tracker;
+    }
     public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+        if (!this.tracker.isMatriarchAvailable()) {
+            return;
+        }
         int screenWidth = graphics.guiWidth();
-        int screenHeight = graphics.guiHeight();
 
         graphics.fill((screenWidth / 2) - 110,
                 30,

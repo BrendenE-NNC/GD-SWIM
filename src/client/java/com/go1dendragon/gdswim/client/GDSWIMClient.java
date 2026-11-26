@@ -12,7 +12,7 @@ public class GDSWIMClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		DailyQuestTracker tracker = new DailyQuestTracker();
-		ReminderHud reminderHud = new ReminderHud();
+		ReminderHud reminderHud = new ReminderHud(tracker);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT,
 				Identifier.fromNamespaceAndPath("gd-swim", "reminder_hud"),
 				reminderHud::render);
