@@ -1,4 +1,6 @@
 package com.go1dendragon.gdswim.client.reminders;
+import com.go1dendragon.gdswim.client.FeatureManager;
+import com.go1dendragon.gdswim.client.gui.Feature;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -10,6 +12,10 @@ public class ReminderHud {
         this.tracker = tracker;
     }
     public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+        Feature feature = FeatureManager.getFeature("matriarch_reminder");
+        if (feature == null || !feature.isEnabled()) {
+            return;
+        }
         if (!this.tracker.isMatriarchAvailable()) {
             return;
         }
