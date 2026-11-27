@@ -10,8 +10,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import java.util.ArrayList;
 
 public class SettingsScreen extends Screen {
-    public static Component TITLE = Component.literal("GD").withColor(0xf3d066)
-            .append(Component.literal(" SWIM").withColor(0x1cb2b5));
+    public static Component TITLE = Component.literal("GD").withColor(0xf3d066).append(Component.literal(" SWIM").withColor(0x1cb2b5));
     private int left;
     private int right;
     private int top;
