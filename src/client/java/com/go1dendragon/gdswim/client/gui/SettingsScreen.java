@@ -4,6 +4,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jspecify.annotations.NonNull;
+import net.minecraft.client.input.MouseButtonEvent;
+
+import java.util.ArrayList;
 
 public class SettingsScreen extends Screen {
     public static Component TITLE = Component.literal("GD").withColor(0xf3d066)
@@ -15,9 +18,14 @@ public class SettingsScreen extends Screen {
     private int dividerX;
     private int dividerY;
     private int buttonX;
+    private final ArrayList<Feature> features = new ArrayList<>();
+    private static final int FEATURE_PADDING = 6;
+    private static final int FEATURE_HEIGHT = 30;
+    private static final int FEATURE_SPACING = 36;
 
     public SettingsScreen() {
         super(Component.literal("GD SWIM"));
+        features.add(new Feature("Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false));
     }
 
     @Override
@@ -64,14 +72,19 @@ public class SettingsScreen extends Screen {
     }
     private void drawFeatureSection(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.fill(dividerX, dividerY, right, bottom, 0xFF2b5071);
-        drawFeature(graphics, "Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false, 6, mouseX, mouseY);
+        //drawFeature(graphics, "Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false, 6, mouseX, mouseY);
+        int drawY = FEATURE_PADDING;
+        for (Feature feature : features) {
+            drawFeature(graphics, feature.getName(), feature.getDescription(), feature.isEnabled(), drawY, mouseX, mouseY);
+            drawY += FEATURE_SPACING;
+        }
     }
     private void drawFeature(GuiGraphicsExtractor graphics, String name, String description, boolean enabled, int y, int mouseX, int mouseY) {
         int featureLeft = dividerX + 6;
         int featureRight = right - 6;
         int featureTop = dividerY + y;
         int featureBottom = featureTop + 30;
-        boolean hovered = isWithinBounds(mouseX, mouseY, featureLeft, featureRight, featureTop, featureBottom);
+        boolean hovered = isWithinFeature(mouseX, mouseY, y);
 
         if (hovered) {
             graphics.fill(featureLeft, featureTop, featureRight,featureBottom, 0xFF5aa6c3);
@@ -109,6 +122,12 @@ public class SettingsScreen extends Screen {
     private boolean isWithinBounds(double mouseX, double mouseY, int left, int right, int top, int bottom) {
         return (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom);
     }
+    private boolean isWithinFeature(double mouseX, double mouseY, int y) {
+        int featureTop = dividerY + y;
+
+        return isWithinBounds(mouseX, mouseY, dividerX + FEATURE_PADDING,
+                right - FEATURE_PADDING, featureTop, featureTop + FEATURE_HEIGHT);
+    }
     private void drawSideBar(GuiGraphicsExtractor graphics) {
         graphics.fill(left + 4, dividerY + 6, dividerX - 4, dividerY + 26, 0xFF5aa6c3);
         graphics.fill(left + 5, dividerY + 7, dividerX - 5, dividerY + 25, 0xFF3e6e98);
@@ -122,5 +141,21 @@ public class SettingsScreen extends Screen {
     private void drawDividers(GuiGraphicsExtractor graphics) {
         graphics.fill(left, dividerY, right, dividerY + 2, 0xFFf3d066);
         graphics.fill(dividerX, dividerY, dividerX+ 2, bottom, 0xFFf3d066);
+    }
+
+    @Override
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
+        int y = FEATURE_PADDING;
+        if (event.button() != 0) {
+            return super.mouseClicked(event, doubleClick);
+        }
+        for (Feature feature : features) {
+            if(isWithinFeature(event.x(), event.y(), y)) {
+                feature.toggle();
+                return true;
+            }
+            y += FEATURE_SPACING;
+        }
+        return super.mouseClicked(event, doubleClick);
     }
 }
