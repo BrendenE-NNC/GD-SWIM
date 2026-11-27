@@ -26,11 +26,12 @@ public class DailyQuestTracker {
             Collection<PlayerInfo> tabListEntries = connection.getListedOnlinePlayers();
             for (PlayerInfo tabInfo : tabListEntries) {
                 Component tabNames = tabInfo.getTabListDisplayName();
-                if (tabNames != null) {
-                    if (tabNames.getString().strip().equals("Matriarch: Available")) {
-                        matriarchAvailable = true;
-                        break;
-                    }
+                if (tabNames == null) {
+                    continue;
+                }
+                if (tabNames.getString().strip().equals("Matriarch: Available")) {
+                    matriarchAvailable = true;
+                    break;
                 }
             }
         }
