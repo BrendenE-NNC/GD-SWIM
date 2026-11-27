@@ -4,11 +4,13 @@ public class Feature {
     private final String name;
     private final String description;
     private boolean enabled;
+    private boolean pendingEnabled;
 
     public Feature(String name, String description, boolean enabled) {
         this.name = name;
         this.description = description;
         this.enabled = enabled;
+        this.pendingEnabled = enabled;
     }
 
     public String getName() {
@@ -20,7 +22,16 @@ public class Feature {
     public boolean isEnabled() {
         return this.enabled;
     }
+    public boolean isPendingEnabled() {
+        return this.pendingEnabled;
+    }
     public void toggle() {
-        this.enabled = !this.enabled;
+        this.pendingEnabled = !this.pendingEnabled;
+    }
+    public void applyChanges() {
+        enabled = pendingEnabled;
+    }
+    public void cancelChanges() {
+        pendingEnabled = enabled;
     }
 }

@@ -1,5 +1,6 @@
 package com.go1dendragon.gdswim.client.gui;
 
+import com.go1dendragon.gdswim.client.FeatureManager;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -18,14 +19,16 @@ public class SettingsScreen extends Screen {
     private int dividerX;
     private int dividerY;
     private int buttonX;
-    private final ArrayList<Feature> features = new ArrayList<>();
+    private final ArrayList<Feature> features = FeatureManager.getFeatures();
     private static final int FEATURE_PADDING = 6;
     private static final int FEATURE_HEIGHT = 30;
     private static final int FEATURE_SPACING = 36;
 
     public SettingsScreen() {
         super(Component.literal("GD SWIM"));
-        features.add(new Feature("Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false));
+        for (Feature feature : features) {
+            feature.cancelChanges();
+        }
     }
 
     @Override
@@ -72,18 +75,17 @@ public class SettingsScreen extends Screen {
     }
     private void drawFeatureSection(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.fill(dividerX, dividerY, right, bottom, 0xFF2b5071);
-        //drawFeature(graphics, "Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false, 6, mouseX, mouseY);
         int drawY = FEATURE_PADDING;
         for (Feature feature : features) {
-            drawFeature(graphics, feature.getName(), feature.getDescription(), feature.isEnabled(), drawY, mouseX, mouseY);
+            drawFeature(graphics, feature.getName(), feature.getDescription(), feature.isPendingEnabled(), drawY, mouseX, mouseY);
             drawY += FEATURE_SPACING;
         }
     }
     private void drawFeature(GuiGraphicsExtractor graphics, String name, String description, boolean enabled, int y, int mouseX, int mouseY) {
-        int featureLeft = dividerX + 6;
-        int featureRight = right - 6;
+        int featureLeft = dividerX + FEATURE_PADDING;
+        int featureRight = right - FEATURE_PADDING;
         int featureTop = dividerY + y;
-        int featureBottom = featureTop + 30;
+        int featureBottom = featureTop + FEATURE_HEIGHT;
         boolean hovered = isWithinFeature(mouseX, mouseY, y);
 
         if (hovered) {
@@ -157,5 +159,13 @@ public class SettingsScreen extends Screen {
             y += FEATURE_SPACING;
         }
         return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public void removed() {
+        for (Feature feature : features) {
+            feature.applyChanges();
+        }
+        super.removed();
     }
 }
