@@ -1,12 +1,12 @@
 package com.go1dendragon.gdswim.client.gui;
 
+import com.go1dendragon.gdswim.client.ConfigManager;
 import com.go1dendragon.gdswim.client.FeatureManager;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jspecify.annotations.NonNull;
 import net.minecraft.client.input.MouseButtonEvent;
-
 import java.util.ArrayList;
 
 public class SettingsScreen extends Screen {
@@ -165,6 +165,7 @@ public class SettingsScreen extends Screen {
         for (Feature feature : features) {
             feature.applyChanges();
         }
+        ConfigManager.save();
         super.removed();
     }
 }
