@@ -26,7 +26,7 @@ public class SettingsScreen extends Screen {
         getLayout(graphics);
         drawBorder(graphics);
         drawPanel(graphics);
-        drawFeatureSection(graphics);
+        drawFeatureSection(graphics, mouseX, mouseY);
         drawSideBar(graphics);
         drawDividers(graphics);
     }
@@ -35,11 +35,11 @@ public class SettingsScreen extends Screen {
         int screenWidth = graphics.guiWidth();
         int screenHeight = graphics.guiHeight();
 
-        int panelWidth = (int) (0.8 * screenWidth / 2);
+        int panelWidth = (int) (0.9 * screenWidth / 2);
         int panelHeight = (int) (0.8 * screenHeight / 2);
 
         int horizBarHeight = (int) (0.55 * screenHeight / 2);
-        int vertBarWidth = (int) (0.4 * screenWidth / 2);
+        int vertBarWidth = (int) (0.5 * screenWidth / 2);
 
         left = (screenWidth / 2) - panelWidth;
         right = (screenWidth / 2) + panelWidth;
@@ -62,8 +62,52 @@ public class SettingsScreen extends Screen {
         graphics.centeredText(font, TITLE, 0, -4, 0xFFFFFFFF);
         graphics.pose().popMatrix();
     }
-    private void drawFeatureSection(GuiGraphicsExtractor graphics) {
+    private void drawFeatureSection(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.fill(dividerX, dividerY, right, bottom, 0xFF2b5071);
+        drawFeature(graphics, "Matriarch Reminder", "Draws a reminder on screen when Matriarch is Ready", false, 6, mouseX, mouseY);
+    }
+    private void drawFeature(GuiGraphicsExtractor graphics, String name, String description, boolean enabled, int y, int mouseX, int mouseY) {
+        int featureLeft = dividerX + 6;
+        int featureRight = right - 6;
+        int featureTop = dividerY + y;
+        int featureBottom = featureTop + 30;
+        boolean hovered = isWithinBounds(mouseX, mouseY, featureLeft, featureRight, featureTop, featureBottom);
+
+        if (hovered) {
+            graphics.fill(featureLeft, featureTop, featureRight,featureBottom, 0xFF5aa6c3);
+        } else {
+            graphics.fill(featureLeft, featureTop, featureRight,featureBottom, 0xFF1c3a54);
+        }
+        if (enabled) {
+            graphics.fill(featureLeft + 1, featureTop + 1, featureRight - 1,featureBottom - 1, 0xFFa47b43);
+        } else {
+            graphics.fill(featureLeft + 1, featureTop + 1, featureRight - 1,featureBottom - 1, 0xFF3e6e98);
+        }
+        drawScaledText(graphics, name,featureLeft + 5, featureTop + 7, 1.1f, 0xFFd0e2ef);
+        drawScaledText(graphics, description,featureLeft + 5, featureTop + 18, 0.7f, 0xFFa9c1d3);
+        drawToggle(graphics, featureRight - 35, featureTop + 10, enabled);
+    }
+    private void drawScaledText(GuiGraphicsExtractor graphics, String text, int x,
+                                int y, float scale, int color) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(x, y);
+        graphics.pose().scale(scale, scale);
+        graphics.text(font, text, 0, 0, color);
+        graphics.pose().popMatrix();
+
+    }
+    private void drawToggle(GuiGraphicsExtractor graphics, int x, int y, boolean enabled) {
+        graphics.fill(x - 1, y - 1, x + 23, y + 11, 0xFF263d62);
+        if (enabled) {
+            graphics.fill(x, y, x + 22, y + 10, 0xFFffb650);
+            graphics.fill(x + 13, y + 1, x + 21, y + 9, 0xFFcfe2f3);
+        } else {
+            graphics.fill(x, y, x + 22, y + 10, 0xFF65747a);
+            graphics.fill(x + 1, y + 1, x + 9, y + 9, 0xFFcfe2f3);
+        }
+    }
+    private boolean isWithinBounds(double mouseX, double mouseY, int left, int right, int top, int bottom) {
+        return (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom);
     }
     private void drawSideBar(GuiGraphicsExtractor graphics) {
         graphics.fill(left + 4, dividerY + 6, dividerX - 4, dividerY + 26, 0xFF5aa6c3);
