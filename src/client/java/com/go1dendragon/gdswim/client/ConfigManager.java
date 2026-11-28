@@ -16,6 +16,7 @@ public class ConfigManager {
 
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("gd-swim.json");
 
+    // Allows real IDs and states to be saved to file
     public static void save() {
         HashMap<String, Boolean> settings = new HashMap<>();
 
@@ -30,6 +31,10 @@ public class ConfigManager {
             IO.println("Error Saving GD SWIM Config: " + e.getMessage());
         }
     }
+
+    // Features not in an outdated version of the mod will have their default
+    // value populated (usually false), when the settings are updated they will
+    // be written to the file.
     public static void load() {
         if (!Files.exists(CONFIG_PATH)) {
             return;
@@ -38,17 +43,17 @@ public class ConfigManager {
             String json = Files.readString(CONFIG_PATH);
 
             Gson gson = new Gson();
-            Type type = new TypeToken<HashMap<String, Boolean>>() {}.getType();
-            HashMap<String, Boolean> settings = gson.fromJson(json, type);
+            Type settingsType = new TypeToken<HashMap<String, Boolean>>() {}.getType();
+            HashMap<String, Boolean> settings = gson.fromJson(json, settingsType);
 
             if (settings == null) {
                 return;
             }
 
             for (Feature feature : FeatureManager.getFeatures()) {
-                Boolean value = settings.get(feature.getId());
-                if (value != null) {
-                    feature.setEnabled(value);
+                Boolean savedState = settings.get(feature.getId());
+                if (savedState != null) {
+                    feature.setEnabled(savedState);
                 }
 
             }

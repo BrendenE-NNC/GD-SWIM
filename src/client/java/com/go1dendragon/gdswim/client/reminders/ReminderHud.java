@@ -12,8 +12,8 @@ public class ReminderHud {
         this.tracker = tracker;
     }
     public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        Feature feature = FeatureManager.getFeature("matriarch_reminder");
-        if (feature == null || !feature.isEnabled()) {
+        Feature matriarchReminder = FeatureManager.getFeature(FeatureManager.MATRIARCH_ID);
+        if (matriarchReminder == null || !matriarchReminder.isEnabled()) {
             return;
         }
         if (!this.tracker.isMatriarchAvailable()) {
@@ -27,6 +27,8 @@ public class ReminderHud {
                 80,
                 0xFFCC0000);
 
+        // Translates the text to position before scaling,
+        // so it stays centered after a size increase.
         graphics.pose().pushMatrix();
         graphics.pose().translate(screenWidth / 2f, 55f);
         graphics.pose().scale(2f, 2f);

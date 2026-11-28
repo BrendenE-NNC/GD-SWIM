@@ -13,7 +13,7 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/gd-swim/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"com.go1dendragon.gdswim.GDSWIM"
@@ -22,13 +22,6 @@
 			"com.go1dendragon.gdswim.client.GDSWIMClient"
 		]
 	},
-	"mixins": [
-		"gd-swim.mixins.json",
-		{
-			"config": "gd-swim.client.mixins.json",
-			"environment": "client"
-		}
-	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.2",
