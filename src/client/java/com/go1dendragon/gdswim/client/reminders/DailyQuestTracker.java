@@ -8,6 +8,7 @@ import java.util.Collection;
 public class DailyQuestTracker {
     private int tickCounter = 0;
     private boolean matriarchAvailable = false;
+    private static final int SCAN_INTERVAL = 20;
 
     public boolean isMatriarchAvailable() {
         return matriarchAvailable;
@@ -15,8 +16,10 @@ public class DailyQuestTracker {
 
     public void tick(Minecraft client) {
         tickCounter++;
-        if (tickCounter >= 20) {
+        // Scanning the tablist ~once per second instead of tick saves on processing (20 ticks = ~1 second)
+        if (tickCounter >= SCAN_INTERVAL) {
             tickCounter = 0;
+            // Resets the variable in case player disconnects or tab entry cannot be found
             matriarchAvailable = false;
             ClientPacketListener connection = client.getConnection();
             if (connection == null) {
@@ -24,12 +27,14 @@ public class DailyQuestTracker {
             }
 
             Collection<PlayerInfo> tabListEntries = connection.getListedOnlinePlayers();
-            for (PlayerInfo tabInfo : tabListEntries) {
-                Component tabNames = tabInfo.getTabListDisplayName();
-                if (tabNames == null) {
+            for (PlayerInfo tabEntry : tabListEntries) {
+                Component displayName = tabEntry.getTabListDisplayName();
+                if (displayName == null) {
                     continue;
                 }
-                if (tabNames.getString().strip().equals("Matriarch: Available")) {
+
+                // strip() is necessary because the Hypixel Tablist has whitespaces before the actual text
+                if (displayName.getString().strip().equals("Matriarch: Available")) {
                     matriarchAvailable = true;
                     break;
                 }

@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 
 public class GDSWIMClient implements ClientModInitializer {
 	private boolean requestedOpenSettings = false;
+
 	@Override
 	public void onInitializeClient() {
 		ConfigManager.load();
@@ -25,6 +26,8 @@ public class GDSWIMClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			tracker.tick(client);
 
+			// Opening the settings menu is delayed by 1 'event' because otherwise the chat closing
+			// when you send the command overwrites the GUI opening.
 			if (requestedOpenSettings) {
 				requestedOpenSettings = false;
 				Minecraft.getInstance().gui.setScreen(new SettingsScreen());
