@@ -30,6 +30,10 @@ public class Feature {
     public boolean isPendingEnabled() {
         return this.pendingEnabled;
     }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        this.pendingEnabled = enabled;
+    }
     public void toggle() {
         this.pendingEnabled = !this.pendingEnabled;
     }

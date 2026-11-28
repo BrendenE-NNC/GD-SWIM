@@ -16,6 +16,7 @@ public class GDSWIMClient implements ClientModInitializer {
 	private boolean requestedOpenSettings = false;
 	@Override
 	public void onInitializeClient() {
+		ConfigManager.load();
 		DailyQuestTracker tracker = new DailyQuestTracker();
 		ReminderHud reminderHud = new ReminderHud(tracker);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT,

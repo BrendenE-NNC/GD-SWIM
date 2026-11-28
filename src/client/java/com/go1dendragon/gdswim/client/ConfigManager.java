@@ -8,6 +8,9 @@ import com.google.gson.GsonBuilder;
 import java.util.HashMap;
 import java.nio.file.Files;
 import java.io.IOException;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import com.google.gson.JsonParseException;
 
 public class ConfigManager {
 
@@ -28,6 +31,29 @@ public class ConfigManager {
         }
     }
     public static void load() {
+        if (!Files.exists(CONFIG_PATH)) {
+            return;
+        }
+        try {
+            String json = Files.readString(CONFIG_PATH);
 
+            Gson gson = new Gson();
+            Type type = new TypeToken<HashMap<String, Boolean>>() {}.getType();
+            HashMap<String, Boolean> settings = gson.fromJson(json, type);
+
+            if (settings == null) {
+                return;
+            }
+
+            for (Feature feature : FeatureManager.getFeatures()) {
+                Boolean value = settings.get(feature.getId());
+                if (value != null) {
+                    feature.setEnabled(value);
+                }
+
+            }
+        } catch (IOException  | JsonParseException e) {
+            IO.println("Error Reading GD SWIM Config: " + e.getMessage());
+        }
     }
 }
